@@ -70,15 +70,7 @@ public class PlayerController : MonoBehaviour
         LookAt(inputDirection);
         float speed = rigidbody.velocity.magnitude;
 
-        // 애니메이션 전환 로직
-        if (speed > 0.1f) // 일정 속도 이상일 때 Run 애니메이션
-        {
-            animator.SetFloat("Velocity", 1f); // Run 애니메이션
-        }
-        else // 속도가 낮으면 Idle 애니메이션
-        {
-            animator.SetFloat("Velocity", 0f); // Idle 애니메이션
-        }
+
 
         //Debug.Log($"Velocity: {rigidbody.velocity}, Speed: {speed}");
     }
@@ -96,12 +88,11 @@ public class PlayerController : MonoBehaviour
 
     public void OnClickMouseLeft(InputAction.CallbackContext context)
     {
-        LookAt(GetWorldPos());
+        
         if (context.phase == InputActionPhase.Performed)
         {
             if (!isAttacking)
             {
-                Debug.Log("StartAttack Called");
                 StartAttack();
             }
             else if (canContinueCombo)
@@ -114,8 +105,13 @@ public class PlayerController : MonoBehaviour
 
     private void StartAttack()
     {
-        if (isAttacking) return; // 이미 공격 중이면 무시
-
+        if (isAttacking)
+        {
+            Debug.Log("StartAttack returned");
+            return; // 이미 공격 중이면 무시
+        }
+        Debug.Log("StartAttack Called");
+        LookAt(GetWorldPos());
         comboStep = 1; // 첫 번째 공격
         isAttacking = true;
         canContinueCombo = false;
@@ -136,6 +132,7 @@ public class PlayerController : MonoBehaviour
 
     private void PlayAttackAnimation(string attackName)
     {
+        Debug.Log("PlayAttackAnimation Called");
         // 모든 공격 트리거 초기화
         animator.ResetTrigger("Attack1");
         animator.ResetTrigger("Attack2");
@@ -163,15 +160,16 @@ public class PlayerController : MonoBehaviour
     // 애니메이션 이벤트에서 호출
     public void AllowCombo()
     {
+        Debug.Log("Allowcombo called");
         canContinueCombo = true; // 다음 공격을 받을 수 있는 상태로 전환
     }
 
     // 애니메이션 이벤트에서 호출
     public void EndAttack()
     {
-        Debug.Log("EndAttack called");
         if (!canContinueCombo) // 다음 입력이 없으면 공격 종료
         {
+            Debug.Log("EndAttack called");
             ResetCombo();
         }
     }
@@ -184,7 +182,14 @@ public class PlayerController : MonoBehaviour
         Vector2 curMoveInput = context.ReadValue<Vector2>();
         inputDirection = new Vector3(curMoveInput.x, 0f, curMoveInput.y);
 
-        Debug.Log($"Move Input: {curMoveInput}, Input Direction: {inputDirection}");
+        //Debug.Log($"Move Input: {curMoveInput}, Input Direction: {inputDirection}");
+        animator.SetTrigger("Move");
+
+        if (context.canceled)
+        {
+            animator.ResetTrigger("Move");
+            animator.SetTrigger("Idle");
+        }
     }
 
     private Vector3 GetWorldPos()
