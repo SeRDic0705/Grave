@@ -57,16 +57,16 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.6812227
-        functionName: EndAttack
+      - time: 0
+        functionName: AllowCombo
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: c2248e1c4f7cc544b8fca82a88883bcf,
           type: 3}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0
-        functionName: AllowCombo
+      - time: 0.6715542
+        functionName: EndAttack
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: c2248e1c4f7cc544b8fca82a88883bcf,
           type: 3}

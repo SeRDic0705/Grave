@@ -146,6 +146,7 @@ public class PlayerController : MonoBehaviour
 
     private void ResetCombo()
     {
+        Debug.Log("ResetCombo called");
         comboStep = 0;
         isAttacking = false;
         canContinueCombo = false;
@@ -167,9 +168,9 @@ public class PlayerController : MonoBehaviour
     // 애니메이션 이벤트에서 호출
     public void EndAttack()
     {
+        Debug.Log("EndAttack called");
         if (!canContinueCombo) // 다음 입력이 없으면 공격 종료
         {
-            Debug.Log("EndAttack called");
             ResetCombo();
         }
     }
@@ -188,7 +189,7 @@ public class PlayerController : MonoBehaviour
         if (context.canceled)
         {
             animator.ResetTrigger("Move");
-            animator.SetTrigger("Idle");
+            animator.SetTrigger("Idle");    // TODO: 공격모션 중 이동키 키보드를 누른 후 공격모션이 끝날때 때면 Idle상태가 유지되는 현상
         }
     }
 
