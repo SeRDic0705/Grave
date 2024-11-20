@@ -511,7 +511,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1189563185}
-  m_LocalRotation: {x: 0.6300752, y: -0.00000005185594, z: 0.000000042075598, w: 0.77653414}
+  m_LocalRotation: {x: 0.6300752, y: 0.00000005185594, z: -0.000000042075598, w: 0.77653414}
   m_LocalPosition: {x: -1.54, y: 20.197, z: -10.719999}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -992,7 +992,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1478170380}
-  m_LocalRotation: {x: 0.6300752, y: -0.00000005185594, z: 0.000000042075598, w: 0.77653414}
+  m_LocalRotation: {x: 0.6300752, y: 0.00000005185594, z: -0.000000042075598, w: 0.77653414}
   m_LocalPosition: {x: -1.54, y: 20.197, z: -10.719999}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1929,6 +1929,16 @@ MonoBehaviour:
   groundLayerMask:
     serializedVersion: 2
     m_Bits: 311
+  audioSource: {fileID: 0}
+  attackClips:
+  - {fileID: 8300000, guid: 3406476b91d07ec409a721a5bc77623e, type: 3}
+  - {fileID: 8300000, guid: e5cfec97f27294b4c8a4191d44a4aa22, type: 3}
+  - {fileID: 8300000, guid: 271c401bccc81eb40af3f64baf834a45, type: 3}
+  roarClips:
+  - {fileID: 8300000, guid: 0c7a186999db2f54a87f71b032c7ad3d, type: 3}
+  - {fileID: 8300000, guid: 1b144315e3523e842bff26eaf21d4b62, type: 3}
+  - {fileID: 8300000, guid: de79c146bb3b43044a1086b34f2dcf12, type: 3}
+  footstepClip: {fileID: 8300000, guid: 2663f12c6ac7a5f40b7e0761a1f5121c, type: 3}
   comboTimeout: 1
 --- !u!1 &919132147877751992 stripped
 GameObject:

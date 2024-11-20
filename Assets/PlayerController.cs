@@ -7,6 +7,10 @@ public class PlayerController : MonoBehaviour
     public Camera camera;
     public float moveSpeed = 3f;
     public LayerMask groundLayerMask;
+    public AudioSource audioSource; // 오디오 소스 컴포넌트
+    public AudioClip[] attackClips; // 공격 사운드 클립 배열 (Attack1, Attack2, Attack3 순서)
+    public AudioClip[] roarClips; // 공격 사운드 클립 배열 (Attack1, Attack2, Attack3 순서)
+    public AudioClip footstepClip; // 발걸음 소리 클립
 
     private Rigidbody rigidbody;
     private Vector3 inputDirection;
@@ -16,6 +20,7 @@ public class PlayerController : MonoBehaviour
     private bool isAttacking = false; // 공격 중인지 여부
     private float comboTimer = 0f; // 콤보 입력 타이머
     public float comboTimeout = 1f; // 콤보 입력 유효 시간
+    private bool isMoving = false; // 이동 중인지 여부
 
     public static PlayerController Instance { get; private set; }
 
@@ -28,6 +33,12 @@ public class PlayerController : MonoBehaviour
         }
         Instance = this;
         rigidbody = GetComponent<Rigidbody>();
+
+        // AudioSource가 설정되지 않은 경우 자동으로 추가
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
     }
 
     private void FixedUpdate()
@@ -51,31 +62,24 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
     private void Move()
     {
-        if (isAttacking) 
-        {
-            //Debug.Log("Attack in progress, movement stopped.");
-            return;
-        }
+        if (isAttacking) return;
 
-        if (inputDirection == Vector3.zero)
-        {
-            //Debug.Log("No input direction, character remains idle.");
-        }
-
-        // 이동 속도 계산
         rigidbody.velocity = inputDirection * moveSpeed + Vector3.up * rigidbody.velocity.y;
         LookAt(inputDirection);
-        float speed = rigidbody.velocity.magnitude;
 
-
-
-        //Debug.Log($"Velocity: {rigidbody.velocity}, Speed: {speed}");
+        if (inputDirection != Vector3.zero && !isMoving)
+        {
+            isMoving = true;
+            PlayFootstepSound();
+        }
+        else if (inputDirection == Vector3.zero)
+        {
+            isMoving = false;
+            audioSource.Stop(); // 이동 멈춤 시 발소리 정지
+        }
     }
-
-
 
     private void LookAt(Vector3 direction)
     {
@@ -88,7 +92,6 @@ public class PlayerController : MonoBehaviour
 
     public void OnClickMouseLeft(InputAction.CallbackContext context)
     {
-        
         if (context.phase == InputActionPhase.Performed)
         {
             if (!isAttacking)
@@ -97,7 +100,6 @@ public class PlayerController : MonoBehaviour
             }
             else if (canContinueCombo)
             {
-                Debug.Log("NextComboStep Called");
                 NextComboStep();
             }
         }
@@ -105,14 +107,10 @@ public class PlayerController : MonoBehaviour
 
     private void StartAttack()
     {
-        if (isAttacking)
-        {
-            Debug.Log("StartAttack returned");
-            return; // 이미 공격 중이면 무시
-        }
-        Debug.Log("StartAttack Called");
+        if (isAttacking) return;
+
         LookAt(GetWorldPos());
-        comboStep = 1; // 첫 번째 공격
+        comboStep = 1;
         isAttacking = true;
         canContinueCombo = false;
 
@@ -121,10 +119,10 @@ public class PlayerController : MonoBehaviour
 
     private void NextComboStep()
     {
-        if (comboStep < 3) // 최대 3단 공격
+        if (comboStep < 3)
         {
             comboStep++;
-            canContinueCombo = false; // 입력 대기 상태 종료
+            canContinueCombo = false;
             string nextAttack = $"Attack{comboStep}";
             PlayAttackAnimation(nextAttack);
         }
@@ -132,21 +130,16 @@ public class PlayerController : MonoBehaviour
 
     private void PlayAttackAnimation(string attackName)
     {
-        Debug.Log("PlayAttackAnimation Called");
-        // 모든 공격 트리거 초기화
         animator.ResetTrigger("Attack1");
         animator.ResetTrigger("Attack2");
         animator.ResetTrigger("Attack3");
 
-        // 현재 공격 트리거 활성화
         animator.SetTrigger(attackName);
-
-        comboTimer = comboTimeout; // 콤보 입력 시간 리셋
+        comboTimer = comboTimeout;
     }
 
     private void ResetCombo()
     {
-        Debug.Log("ResetCombo called");
         comboStep = 0;
         isAttacking = false;
         canContinueCombo = false;
@@ -154,42 +147,96 @@ public class PlayerController : MonoBehaviour
         animator.ResetTrigger("Attack1");
         animator.ResetTrigger("Attack2");
         animator.ResetTrigger("Attack3");
-
-        animator.SetTrigger("Idle"); // Idle 상태로 복귀
+        animator.SetTrigger("Idle");
     }
 
     // 애니메이션 이벤트에서 호출
     public void AllowCombo()
     {
-        Debug.Log("Allowcombo called");
-        canContinueCombo = true; // 다음 공격을 받을 수 있는 상태로 전환
+        canContinueCombo = true;
     }
 
     // 애니메이션 이벤트에서 호출
     public void EndAttack()
     {
-        Debug.Log("EndAttack called");
-        if (!canContinueCombo) // 다음 입력이 없으면 공격 종료
+        if (!canContinueCombo)
         {
             ResetCombo();
         }
     }
 
+    /*
+    // 애니메이션 이벤트에서 호출
+    public void PlayAttackSound()
+    {
+        if (comboStep > 0 && comboStep <= attackClips.Length)
+        {
+            audioSource.PlayOneShot(attackClips[comboStep - 1]);
+        }
+    }
+    */
 
+    public void PlayAttackSound()
+    {
+        // 현재 재생 중인 애니메이션 상태를 확인
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
 
+        // Attack1, Attack2, Attack3 상태에 따라 적절한 효과음 재생
+        if (stateInfo.IsName("Attack1") && attackClips.Length > 0)
+        {
+            audioSource.PlayOneShot(attackClips[0]);
+        }
+        else if (stateInfo.IsName("Attack2") && attackClips.Length > 1)
+        {
+            audioSource.PlayOneShot(attackClips[1]);
+        }
+        else if (stateInfo.IsName("Attack3") && attackClips.Length > 2)
+        {
+            audioSource.PlayOneShot(attackClips[2]);
+        }
+    }
+
+    public void PlayRoarSound()
+    {
+        // 현재 재생 중인 애니메이션 상태를 확인
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+
+        // Attack1, Attack2, Attack3 상태에 따라 적절한 효과음 재생
+        if (stateInfo.IsName("Attack1") && roarClips.Length > 0)
+        {
+            audioSource.PlayOneShot(roarClips[0]);
+        }
+        else if (stateInfo.IsName("Attack2") && roarClips.Length > 1)
+        {
+            audioSource.PlayOneShot(roarClips[1]);
+        }
+        else if (stateInfo.IsName("Attack3") && roarClips.Length > 2)
+        {
+            audioSource.PlayOneShot(roarClips[2]);
+        }
+    }
 
     public void OnMoveInput(InputAction.CallbackContext context)
     {
         Vector2 curMoveInput = context.ReadValue<Vector2>();
         inputDirection = new Vector3(curMoveInput.x, 0f, curMoveInput.y);
 
-        //Debug.Log($"Move Input: {curMoveInput}, Input Direction: {inputDirection}");
         animator.SetTrigger("Move");
 
         if (context.canceled)
         {
             animator.ResetTrigger("Move");
-            animator.SetTrigger("Idle");    // TODO: 공격모션 중 이동키 키보드를 누른 후 공격모션이 끝날때 때면 Idle상태가 유지되는 현상
+            animator.SetTrigger("Idle");
+        }
+    }
+
+    private void PlayFootstepSound()
+    {
+        if (footstepClip != null)
+        {
+            audioSource.clip = footstepClip;
+            audioSource.loop = true;
+            audioSource.Play();
         }
     }
 
