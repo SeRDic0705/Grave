@@ -11,6 +11,9 @@ public class PlayerController : MonoBehaviour
     public AudioClip[] attackClips; // 공격 사운드 클립 배열 (Attack1, Attack2, Attack3 순서)
     public AudioClip[] roarClips; // 공격 사운드 클립 배열 (Attack1, Attack2, Attack3 순서)
     public AudioClip footstepClip; // 발걸음 소리 클립
+    public AudioClip skill1Clip; // skill1 효과음 클립
+
+    public ParticleSystem skill1Particle; // skill1 파티클 시스템
 
     private Rigidbody rigidbody;
     private Vector3 inputDirection;
@@ -214,6 +217,63 @@ public class PlayerController : MonoBehaviour
         {
             audioSource.PlayOneShot(roarClips[2]);
         }
+    }
+
+    // 특수 스킬 1 실행
+    public void OnSkill1Input(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            ActivateSkill1();
+        }
+    }
+
+    private void ActivateSkill1()
+    {
+        animator.SetTrigger("Skill1"); // skill1 애니메이션 실행
+        PlaySkill1Sound(); // skill1 효과음 실행
+    }
+
+    // skill1 효과음 재생
+    public void PlaySkill1Sound()
+    {
+        Debug.Log("PlaySkill1Sound called");
+        if (skill1Clip != null)
+        {
+            audioSource.PlayOneShot(skill1Clip);
+        }
+        else
+        {
+            Debug.LogWarning("Skill1 sound clip is not assigned.");
+        }
+    }
+
+    public void PlaySkill1Particle()
+    {
+        Debug.Log("PlaySkill1Particle called");
+
+        if (skill1Particle != null && !skill1Particle.isPlaying)
+        {
+            skill1Particle.Play();
+        }
+        else
+        {
+            Debug.LogWarning("Skill1 particle system is not assigned or already playing.");
+        }
+    }
+
+    // 특수 스킬 1 실행
+    public void OnSkill2Input(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            ActivateSkill2();
+        }
+    }
+
+    private void ActivateSkill2()
+    {
+        animator.SetTrigger("Skill2"); // skill1 애니메이션 실행
     }
 
     public void OnMoveInput(InputAction.CallbackContext context)

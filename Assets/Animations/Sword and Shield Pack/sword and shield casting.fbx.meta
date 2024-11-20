@@ -33,7 +33,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: mixamo.com
+      name: skill1
       takeName: mixamo.com
       internalID: -203655887218126122
       firstFrame: 0
@@ -57,10 +57,18 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0
-        functionName: NewEvent
+      - time: 0.0024097904
+        functionName: PlaySkill1Sound
         data: 
-        objectReferenceParameter: {fileID: 2944396702758532163, guid: e190bf97c041e58448af6b043116cba0,
+        objectReferenceParameter: {fileID: 11500000, guid: c2248e1c4f7cc544b8fca82a88883bcf,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.6130435
+        functionName: PlaySkill1Particle
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: c2248e1c4f7cc544b8fca82a88883bcf,
           type: 3}
         floatParameter: 0
         intParameter: 0
