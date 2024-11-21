@@ -168,6 +168,18 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // 애니메이션 이벤트에서 호출
+    public void EndSkill()
+    {
+        isAttacking = false;
+        animator.ResetTrigger("Skill1");
+        animator.ResetTrigger("Skill2");
+
+        animator.SetTrigger("Idle");
+        animator.ResetTrigger("Idle");
+
+    }
+
     /*
     // 애니메이션 이벤트에서 호출
     public void PlayAttackSound()
@@ -230,8 +242,12 @@ public class PlayerController : MonoBehaviour
 
     private void ActivateSkill1()
     {
+        if (isAttacking) return;
+
+        isAttacking = true;
+
         animator.SetTrigger("Skill1"); // skill1 애니메이션 실행
-        PlaySkill1Sound(); // skill1 효과음 실행
+        PlaySkill1Particle();
     }
 
     // skill1 효과음 재생
