@@ -37,4 +37,9 @@ public class ZombieGenerator : MonoBehaviour
         // max test
         maxZombies--;
     }
+
+    public void ZombieDied()
+    {
+        maxZombies++;
+    }
 }
