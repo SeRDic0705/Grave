@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ZombieGenerator : MonoBehaviour
 {
-    public GameObject zombiePrefab; 
+    public GameObject zombiePrefab;
     public float spawnRadius = 10f; // spawn 위치
     public int maxZombies = 5; // max 
     public float spawnInterval = 3f; // spawn 간격(second)

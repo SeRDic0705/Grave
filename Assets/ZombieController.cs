@@ -86,7 +86,7 @@ public class ZombieController : MonoBehaviour
             if (playerHealth != null)
             {
                 playerHealth.TakeDamage(1);
-                Debug.Log("플레이어 1감소");
+                Debug.Log("Player got damaged");
             }
             Invoke(nameof(ResetAttack), time_between_attacks);
         }
@@ -94,11 +94,11 @@ public class ZombieController : MonoBehaviour
 
     private void Die()
     {
-       
-        agent.enabled = false; 
-        Destroy(gameObject, 0.5f); 
 
-        
+        agent.enabled = false;
+        Destroy(gameObject, 0.5f);
+
+
         FindObjectOfType<ZombieGenerator>().ZombieDied();
     }
 
