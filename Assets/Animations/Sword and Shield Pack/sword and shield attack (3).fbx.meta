@@ -57,7 +57,15 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.17004971
+      - time: 0.0793034
+        functionName: PlayRoarSound
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: c2248e1c4f7cc544b8fca82a88883bcf,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.1836737
         functionName: PlayAttackSound
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: c2248e1c4f7cc544b8fca82a88883bcf,
@@ -67,14 +75,6 @@ ModelImporter:
         messageOptions: 0
       - time: 0.83284456
         functionName: EndAttack
-        data: 
-        objectReferenceParameter: {fileID: 11500000, guid: c2248e1c4f7cc544b8fca82a88883bcf,
-          type: 3}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: 0.09565217
-        functionName: PlayRoarSound
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: c2248e1c4f7cc544b8fca82a88883bcf,
           type: 3}
