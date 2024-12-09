@@ -149,6 +149,10 @@ public class PlayerController : MonoBehaviour
         animator.SetTrigger(attackName);
         comboTimer = comboTimeout;
 
+    }
+
+    private void EnableAttackCollider()
+    {
         attackCollider.enabled = true;
     }
 

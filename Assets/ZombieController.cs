@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -36,7 +35,7 @@ public class ZombieController : MonoBehaviour
     }
 
     private void Start()
-    {   // IDLE Á¦°Å (ÃßÈÄ ÅäÀÇ)
+    {   // IDLE ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
         animator.SetBool("isRunning", true);
     }
 
@@ -89,7 +88,7 @@ public class ZombieController : MonoBehaviour
             if (playerHealth != null)
             {
                 playerHealth.TakeDamage(1);
-                Debug.Log("Player Got Damaged!"); // Testing¿ë
+                Debug.Log("Player Got Damaged!"); // Testingï¿½ï¿½
             }
             Invoke(nameof(ResetAttack), time_between_attacks);
         }
@@ -100,7 +99,7 @@ public class ZombieController : MonoBehaviour
         if (isDead) return;
 
         currentHP -= damage;
-        Debug.Log($"Zombie HP: {currentHP}"); // Testing¿ë
+        Debug.Log($"Zombie HP: {currentHP}"); // Testingï¿½ï¿½
 
         animator.SetTrigger("Attacked");
 
@@ -126,7 +125,7 @@ public class ZombieController : MonoBehaviour
             animator.SetTrigger("FallingFront");
         }
 
-        // ÄÚ·çÆ¾
+        // ï¿½Ú·ï¿½Æ¾
         StartCoroutine(WaitForDeathAnimation());
     }
 
@@ -140,11 +139,12 @@ public class ZombieController : MonoBehaviour
         FindObjectOfType<ZombieGenerator>()?.ZombieDied();
     }
 
-    private void OnCollisionEnter(Collision other)
+    private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Player"))
+        if (other.gameObject.CompareTag("Attack"))
         {
-            Debug.Log("ok");
+            Debug.Log("collision occured");
+            TakeDamage(GameManager.Instance.Player.atk);
         }
     }
 
