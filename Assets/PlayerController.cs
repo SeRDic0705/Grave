@@ -3,6 +3,8 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+
+
     public Animator animator;
     public Camera camera;
     public float moveSpeed = 3f;
@@ -12,6 +14,10 @@ public class PlayerController : MonoBehaviour
     public AudioClip[] roarClips; // 공격 사운드 클립 배열 (Attack1, Attack2, Attack3 순서)
     public AudioClip footstepClip; // 발걸음 소리 클립
     public AudioClip skill1Clip; // skill1 효과음 클립
+
+    public Collider attackCollider;
+
+    public Collider skill1Collider;
 
     public ParticleSystem skill1Particle; // skill1 파티클 시스템
 
@@ -25,10 +31,13 @@ public class PlayerController : MonoBehaviour
     public float comboTimeout = 1f; // 콤보 입력 유효 시간
     private bool isMoving = false; // 이동 중인지 여부
 
+    private GameManager gameManager;
     public static PlayerController Instance { get; private set; }
 
     private void Awake()
     {
+        gameManager = GameManager.Instance;
+
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -139,6 +148,8 @@ public class PlayerController : MonoBehaviour
 
         animator.SetTrigger(attackName);
         comboTimer = comboTimeout;
+
+        attackCollider.enabled = true;
     }
 
     private void ResetCombo()
@@ -162,6 +173,7 @@ public class PlayerController : MonoBehaviour
     // 애니메이션 이벤트에서 호출
     public void EndAttack()
     {
+        attackCollider.enabled = false;
         if (!canContinueCombo)
         {
             ResetCombo();
@@ -177,6 +189,8 @@ public class PlayerController : MonoBehaviour
 
         animator.SetTrigger("Idle");
         animator.ResetTrigger("Idle");
+
+        skill1Collider.enabled = false;
 
     }
 
@@ -205,6 +219,7 @@ public class PlayerController : MonoBehaviour
         {
             audioSource.PlayOneShot(attackClips[1]);
         }
+        
         else if (stateInfo.IsName("Attack3") && attackClips.Length > 2)
         {
             audioSource.PlayOneShot(attackClips[2]);
@@ -217,17 +232,19 @@ public class PlayerController : MonoBehaviour
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
 
         // Attack1, Attack2, Attack3 상태에 따라 적절한 효과음 재생
-        if (stateInfo.IsName("Attack1") && roarClips.Length > 0)
+        if (comboStep == 1)
         {
             audioSource.PlayOneShot(roarClips[0]);
         }
-        else if (stateInfo.IsName("Attack2") && roarClips.Length > 1)
+        else if (comboStep == 2)
         {
             audioSource.PlayOneShot(roarClips[1]);
+            Debug.Log("Roar2");
         }
-        else if (stateInfo.IsName("Attack3") && roarClips.Length > 2)
+        else if (comboStep == 3)
         {
             audioSource.PlayOneShot(roarClips[2]);
+            Debug.Log("Roar3");
         }
     }
 
@@ -245,9 +262,9 @@ public class PlayerController : MonoBehaviour
         if (isAttacking) return;
 
         isAttacking = true;
+        skill1Collider.enabled = true;
 
         animator.SetTrigger("Skill1"); // skill1 애니메이션 실행
-        PlaySkill1Particle();
     }
 
     // skill1 효과음 재생
@@ -266,11 +283,11 @@ public class PlayerController : MonoBehaviour
 
     public void PlaySkill1Particle()
     {
-        Debug.Log("PlaySkill1Particle called");
 
         if (skill1Particle != null && !skill1Particle.isPlaying)
         {
             skill1Particle.Play();
+            Debug.Log("PlaySkill1Particle called");
         }
         else
         {

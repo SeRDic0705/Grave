@@ -65,7 +65,7 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.6130435
+      - time: 0.24889782
         functionName: PlaySkill1Particle
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: c2248e1c4f7cc544b8fca82a88883bcf,
