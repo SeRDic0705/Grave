@@ -2471,6 +2471,16 @@ PrefabInstance:
       propertyPath: m_IsKinematic
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 137631440682622719, guid: a93287d7ea936c54e8fcb9954ebb15ff,
+        type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2229690953931995479, guid: a93287d7ea936c54e8fcb9954ebb15ff,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4134417944588567994, guid: a93287d7ea936c54e8fcb9954ebb15ff,
         type: 3}
       propertyPath: player
@@ -2484,7 +2494,7 @@ PrefabInstance:
     - target: {fileID: 4134417944588567994, guid: a93287d7ea936c54e8fcb9954ebb15ff,
         type: 3}
       propertyPath: attack_range
-      value: 1.2
+      value: 0.95
       objectReference: {fileID: 0}
     - target: {fileID: 4134417944588567994, guid: a93287d7ea936c54e8fcb9954ebb15ff,
         type: 3}

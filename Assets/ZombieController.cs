@@ -11,7 +11,7 @@ public class ZombieController : MonoBehaviour
 
     private Animator animator;
 
-    // Patroling
+    // Patroling (??)
     public Vector3 walk_point;
     bool walk_point_set;
     public float walk_point_range;
@@ -25,6 +25,7 @@ public class ZombieController : MonoBehaviour
 
     int maxHP = 100;
     int currentHP;
+    private bool isDead = false;
 
     private void Awake()
     {
@@ -32,6 +33,11 @@ public class ZombieController : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         currentHP = maxHP;
+    }
+
+    private void Start()
+    {   // IDLE 제거 (추후 토의)
+        animator.SetBool("isRunning", true);
     }
 
     private void SearchWalkPoint()
@@ -59,7 +65,6 @@ public class ZombieController : MonoBehaviour
     {
         agent.SetDestination(player.position);
 
-
         animator.SetBool("isRunning", true);
         animator.SetBool("isAttacking", false);
     }
@@ -71,9 +76,7 @@ public class ZombieController : MonoBehaviour
 
     private void AttackPlayer()
     {
-
         agent.SetDestination(transform.position);
-
         transform.LookAt(player);
 
         animator.SetBool("isRunning", false);
@@ -86,31 +89,75 @@ public class ZombieController : MonoBehaviour
             if (playerHealth != null)
             {
                 playerHealth.TakeDamage(1);
-                Debug.Log("Player got damaged");
+                Debug.Log("Player Got Damaged!"); // Testing용
             }
             Invoke(nameof(ResetAttack), time_between_attacks);
         }
     }
 
+    public void TakeDamage(int damage)
+    {
+        if (isDead) return;
+
+        currentHP -= damage;
+        Debug.Log($"Zombie HP: {currentHP}"); // Testing용
+
+        animator.SetTrigger("Attacked");
+
+        if (currentHP <= 0)
+        {
+            Die();
+        }
+    }
+
     private void Die()
     {
-
+        if (isDead) return;
+        isDead = true;
         agent.enabled = false;
-        Destroy(gameObject, 0.5f);
 
+        // Random
+        if (Random.value > 0.5f)
+        {
+            animator.SetTrigger("FallingBack");
+        }
+        else
+        {
+            animator.SetTrigger("FallingFront");
+        }
 
-        FindObjectOfType<ZombieGenerator>().ZombieDied();
+        // 코루틴
+        StartCoroutine(WaitForDeathAnimation());
+    }
+
+    private IEnumerator WaitForDeathAnimation()
+    {
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+
+        // Wait
+        yield return new WaitForSeconds(stateInfo.length);
+        Destroy(gameObject);
+        FindObjectOfType<ZombieGenerator>()?.ZombieDied();
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            Debug.Log("ok");
+        }
     }
 
     void Update()
     {
+        if (isDead) return;
 
         player_in_sight_range = Physics.CheckSphere(transform.position, sight_range, what_is_player);
         player_in_attack_range = Physics.CheckSphere(transform.position, attack_range, what_is_player);
 
         if (!player_in_sight_range && !player_in_attack_range)
         {
-            Patroling();
+            Patroling(); // ???
         }
         else if (player_in_sight_range && !player_in_attack_range)
         {
