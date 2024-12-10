@@ -9,8 +9,9 @@ public class ZombieController : MonoBehaviour
     public LayerMask what_is_ground, what_is_player;
 
     private Animator animator;
+    private ZombieGenerator zombieGenerator;
 
-    // Patroling (??)
+    // Patroling
     public Vector3 walk_point;
     bool walk_point_set;
     public float walk_point_range;
@@ -34,8 +35,13 @@ public class ZombieController : MonoBehaviour
         currentHP = maxHP;
     }
 
+    public void SetZombieGenerator(ZombieGenerator generator)
+    {
+        zombieGenerator = generator;
+    }
+
     private void Start()
-    {   // IDLE ���� (���� ����)
+    {
         animator.SetBool("isRunning", true);
     }
 
@@ -87,8 +93,9 @@ public class ZombieController : MonoBehaviour
             HealthManager playerHealth = player.GetComponent<HealthManager>();
             if (playerHealth != null)
             {
+                // TODO: Level Design , Debuging log deletion
                 playerHealth.TakeDamage(1);
-                Debug.Log("Player Got Damaged!"); // Testing��
+                Debug.Log("Player Got Damaged!");
             }
             Invoke(nameof(ResetAttack), time_between_attacks);
         }
@@ -96,10 +103,11 @@ public class ZombieController : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        // TODO: Level Design , Debuging log deletion
         if (isDead) return;
 
         currentHP -= damage;
-        Debug.Log($"Zombie HP: {currentHP}"); // Testing��
+        Debug.Log($"Zombie HP: {currentHP}");
 
         animator.SetTrigger("Attacked");
 
@@ -115,7 +123,6 @@ public class ZombieController : MonoBehaviour
         isDead = true;
         agent.enabled = false;
 
-        // Random
         if (Random.value > 0.5f)
         {
             animator.SetTrigger("FallingBack");
@@ -125,25 +132,25 @@ public class ZombieController : MonoBehaviour
             animator.SetTrigger("FallingFront");
         }
 
-        // �ڷ�ƾ
         StartCoroutine(WaitForDeathAnimation());
     }
 
     private IEnumerator WaitForDeathAnimation()
     {
-        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        AnimatorClipInfo[] clipInfo = animator.GetCurrentAnimatorClipInfo(0);
+        float animationLength = clipInfo.Length > 0 ? clipInfo[0].clip.length : 1f;
 
-        // Wait
-        yield return new WaitForSeconds(stateInfo.length);
+        yield return new WaitForSeconds(animationLength);
+
         Destroy(gameObject);
-        FindObjectOfType<ZombieGenerator>()?.ZombieDied();
+        zombieGenerator?.ZombieDied();
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Attack"))
         {
-            Debug.Log("collision occured");
+            Debug.Log("Collision occurred");
             TakeDamage(GameManager.Instance.Player.atk);
         }
     }
@@ -152,12 +159,22 @@ public class ZombieController : MonoBehaviour
     {
         if (isDead) return;
 
+        // Distance calcuation
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+
+        // Push zombies
+        if (distanceToPlayer < 0.5f)
+        {
+            Vector3 directionAwayFromPlayer = (transform.position - player.position).normalized;
+            transform.position += directionAwayFromPlayer * 0.3f; // push coefficient 
+        }
+
         player_in_sight_range = Physics.CheckSphere(transform.position, sight_range, what_is_player);
         player_in_attack_range = Physics.CheckSphere(transform.position, attack_range, what_is_player);
 
         if (!player_in_sight_range && !player_in_attack_range)
         {
-            Patroling(); // ???
+            Patroling();
         }
         else if (player_in_sight_range && !player_in_attack_range)
         {
