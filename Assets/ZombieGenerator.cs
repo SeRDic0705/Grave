@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class ZombieGenerator : MonoBehaviour
 {
+    // TODO: Level Design , Debuging log deletion
     public GameObject zombiePrefab;
-    public float spawnRadius = 10f; // spawn 위치
-    public int maxZombies = 5; // max 
-    public float spawnInterval = 3f; // spawn 간격(second)
+    public float spawnRadius = 10f;
+    public int maxZombies = 5;
+    public float spawnInterval = 3f;
 
-    private float spawnTimer = 0f; // timer
+    private float spawnTimer = 0f;
 
     private void Update()
     {
-        // 일정 시간 간격으로 몬스터를 생성
         spawnTimer += Time.deltaTime;
         if (spawnTimer >= spawnInterval && maxZombies > 0)
         {
@@ -24,17 +24,19 @@ public class ZombieGenerator : MonoBehaviour
 
     private void SpawnZombie()
     {
-        // spawn loc
         Vector3 spawnPosition = new Vector3(
             transform.position.x + Random.Range(-spawnRadius, spawnRadius),
             transform.position.y,
             transform.position.z + Random.Range(-spawnRadius, spawnRadius)
         );
 
-        // prefab 생성
-        Instantiate(zombiePrefab, spawnPosition, Quaternion.identity);
+        GameObject newZombie = Instantiate(zombiePrefab, spawnPosition, Quaternion.identity);
+        ZombieController zombieController = newZombie.GetComponent<ZombieController>();
+        if (zombieController != null)
+        {
+            zombieController.SetZombieGenerator(this);
+        }
 
-        // max test
         maxZombies--;
     }
 
