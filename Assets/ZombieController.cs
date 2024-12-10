@@ -87,16 +87,11 @@ public class ZombieController : MonoBehaviour
         animator.SetBool("isRunning", false);
         animator.SetBool("isAttacking", true);
 
+        HealthManager h = player.GetComponent<HealthManager>();
         if (!already_attacked)
         {
             already_attacked = true;
-            HealthManager playerHealth = player.GetComponent<HealthManager>();
-            if (playerHealth != null)
-            {
-                // TODO: Level Design , Debuging log deletion
-                playerHealth.TakeDamage(1);
-                Debug.Log("Player Got Damaged!");
-            }
+            h.TakeDamage(GameManager.Instance.Player.hp);
             Invoke(nameof(ResetAttack), time_between_attacks);
         }
     }

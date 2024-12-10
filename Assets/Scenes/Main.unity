@@ -1753,11 +1753,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32a26456885a30840a85deb87e686ee0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  zombiePrefab: {fileID: 6028890723899874347, guid: b94b3704d17f8024f902d024f418b342,
+  zombiePrefab: {fileID: 5129041924146477374, guid: 632f8eca6808ba74fa50674e6faf9d76,
     type: 3}
   spawnRadius: 10
   maxZombies: 10
-  spawnInterval: 1
+  spawnInterval: 2
 --- !u!4 &1611419796
 Transform:
   m_ObjectHideFlags: 0
@@ -2085,7 +2085,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.2
+  m_Radius: 0.3
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
