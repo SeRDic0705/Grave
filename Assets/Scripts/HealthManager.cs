@@ -24,6 +24,8 @@ public class HealthManager : MonoBehaviour
             healthBar.fillAmount = (float)player.currentHp / player.hp;
         }
 
+        /*
+        // 테스트 코드들
         // 숫자 1을 누르면 체력 감소
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
@@ -35,6 +37,7 @@ public class HealthManager : MonoBehaviour
         {
             Heal(10);
         }
+        */
     }
 
     // Player의 Damage 함수 호출

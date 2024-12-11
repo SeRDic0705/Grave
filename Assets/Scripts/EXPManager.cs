@@ -24,11 +24,13 @@ public class EXPManager : MonoBehaviour
             EXPBar.fillAmount = (float)player.currentEXP / player.EXP;
         }
 
-        // 숫자 9을 누르면 경험치 증가
+        /*
+        // 숫자 9을 누르면 경험치 증가 테스트 코드
         if (Input.GetKeyDown(KeyCode.Alpha9))
         {
             GainEXP(40);
         }
+        */
     }
 
     // Player의 Damage 함수 호출

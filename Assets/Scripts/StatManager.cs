@@ -48,11 +48,13 @@ public class StatManager : MonoBehaviour
             levelText.text = $"{player.level}";
         }
 
-        // 숫자 1을 누르면 레벨업
+        /*
+        // 숫자 3을 누르면 레벨업 테스트
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             LevelUp();
         }
+        */
     }
 
     private void IncreaseStat(string statType)
