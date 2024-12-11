@@ -15,7 +15,7 @@ public class ZombieController : MonoBehaviour
     private AudioSource audioSource;
     public AudioClip[] voiceGrunts;
     public AudioClip slurpBlood;
-    public AudioClip attackGrunt1; 
+    public AudioClip attackGrunt1;
     public AudioClip attackGrunt2;
 
 
@@ -83,9 +83,9 @@ public class ZombieController : MonoBehaviour
         {
             if (!audioSource.isPlaying)
             {
-                int randomIndex = Random.Range(0, 3); 
+                int randomIndex = Random.Range(0, 3);
                 audioSource.clip = voiceGrunts[randomIndex];
-                audioSource.loop = true; 
+                audioSource.loop = true;
                 audioSource.Play();
             }
         }
@@ -104,9 +104,9 @@ public class ZombieController : MonoBehaviour
     {
         if (audioSource != null && voiceGrunts.Length >= 5)
         {
-            int randomIndex = Random.Range(3, 5); 
+            int randomIndex = Random.Range(3, 5);
             audioSource.clip = voiceGrunts[randomIndex];
-            audioSource.loop = false; 
+            audioSource.loop = false;
             audioSource.Play();
         }
     }
@@ -116,7 +116,7 @@ public class ZombieController : MonoBehaviour
         if (audioSource != null && slurpBlood != null)
         {
             audioSource.clip = slurpBlood;
-            audioSource.loop = false; 
+            audioSource.loop = false;
             audioSource.Play();
         }
     }
@@ -171,7 +171,7 @@ public class ZombieController : MonoBehaviour
         animator.SetBool("isRunning", false);
         animator.SetBool("isAttacking", true);
 
-        StopSound(); 
+        StopSound();
         PlayAttackSound();
 
         if (!already_attacked)
@@ -245,7 +245,6 @@ public class ZombieController : MonoBehaviour
         yield return new WaitForSeconds(animationLength);
 
         Destroy(gameObject);
-        zombieGenerator?.ZombieDied();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -287,7 +286,7 @@ public class ZombieController : MonoBehaviour
         }
 
         levelUpTimer += Time.deltaTime;
-        if (levelUpTimer > 30.0f)
+        if (levelUpTimer > 60.0f)
         {
             maxHP += 20;
         }
