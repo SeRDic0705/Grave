@@ -313,6 +313,19 @@ public class PlayerController : MonoBehaviour
         animator.SetTrigger("Skill2"); // skill1 애니메이션 실행
     }
 
+    public void OnSkill3Input(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            ActivateSkill3();
+        }
+    }
+
+    private void ActivateSkill3()
+    {
+        animator.SetTrigger("Skill3"); // skill1 애니메이션 실행
+    }
+
     public void OnMoveInput(InputAction.CallbackContext context)
     {
         Vector2 curMoveInput = context.ReadValue<Vector2>();

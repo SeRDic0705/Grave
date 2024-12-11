@@ -91,7 +91,8 @@ public class ZombieController : MonoBehaviour
         if (!already_attacked)
         {
             already_attacked = true;
-            h.TakeDamage(GameManager.Instance.Player.hp);
+            Debug.Log(GameManager.Instance.Player.hp);
+            //h.TakeDamage(GameManager.Instance.Player.hp);
             Invoke(nameof(ResetAttack), time_between_attacks);
         }
     }
