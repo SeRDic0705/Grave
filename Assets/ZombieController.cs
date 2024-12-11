@@ -102,12 +102,16 @@ public class ZombieController : MonoBehaviour
         {
             already_attacked = true;
 
+
             GameManager.Instance.Player.hp -= Damage;
             
             if(GameManager.Instance.Player.hp <= 0)
             {
                 Debug.Log("game over");
             }
+
+            
+
             Invoke(nameof(ResetAttack), time_between_attacks);
         }
     }
