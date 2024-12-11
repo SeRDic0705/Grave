@@ -55,6 +55,15 @@ public class StatManager : MonoBehaviour
             LevelUp();
         }
         */
+
+        /*
+        // 숫자 7을 누르면 게임오버 테스트
+        if (Input.GetKeyDown(KeyCode.Alpha7))
+        {
+            player.TriggerGameOver();
+        }
+        */
+        
     }
 
     private void IncreaseStat(string statType)

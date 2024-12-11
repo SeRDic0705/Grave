@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player
 {
@@ -109,6 +110,11 @@ public class Player
         point -= 1;
         Debug.Log($"{statType} increased! Remaining Points: {point}");
         return true;
+    }
+
+    public void TriggerGameOver()
+    {
+        SceneManager.LoadScene("GameOver");
     }
 
 }
