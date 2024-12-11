@@ -11,6 +11,9 @@ public class Player : MonoBehaviour
     public int def;
     public int level;
     public int point;
+    public float skill1Cooldown = 5f;
+    public float skill2Cooldown = 7f;
+    public float skill3Cooldown = 10f;
 
     private void Awake()
     {
