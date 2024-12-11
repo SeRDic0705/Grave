@@ -17,7 +17,6 @@ public class Player
 
     private Player()
     {
-        // �⺻ �Ӽ� �ʱ�ȭ
         hp = 100;
         currentHp = 100;
         speed = 3.0f;
