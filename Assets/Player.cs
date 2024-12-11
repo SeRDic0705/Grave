@@ -11,9 +11,16 @@ public class Player
     public int def;
     public int level;
     public int point;
+    public int EXP;
+    public int currentEXP;
     public float skill1Cooldown = 5f;
     public float skill2Cooldown = 7f;
     public float skill3Cooldown = 10f;
+
+    public int[] EXPList = new int[]
+    {
+        100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200
+    };
 
     private Player()
     {
@@ -24,6 +31,8 @@ public class Player
         def = 5;
         level = 1;
         point = 0;
+        currentEXP = 0;
+        EXP = EXPList[0];
 
         Debug.Log("Player initialized");
     }
@@ -35,6 +44,22 @@ public class Player
             player = new Player();
         }
         return player;
+    }
+
+    public void GainEXP(int amount)
+    {
+        currentEXP += amount;
+        if (currentEXP >= EXP)
+        {
+            currentEXP -= EXP;
+            LevelUp();
+            if (level <= 11)
+            {
+                EXP = EXPList[level - 1];
+            }
+        }
+
+        Debug.Log($"Gained {amount} EXP. Current EXP: {currentEXP}, Level: {level}, Next Level EXP: {EXP}");
     }
 
     public void Damage(int amount)
