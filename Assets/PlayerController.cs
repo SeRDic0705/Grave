@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
 
     public Collider skill1Collider;
 
+    public ParticleSystem[] attackParticles;
     public ParticleSystem skill1Particle; // skill1 파티클 시스템
 
     private Rigidbody rigidbody;
@@ -151,9 +152,11 @@ public class PlayerController : MonoBehaviour
 
     }
 
+
     private void EnableAttackCollider()
     {
         attackCollider.enabled = true;
+        attackParticles[comboStep-1].Play();
     }
 
     private void ResetCombo()
