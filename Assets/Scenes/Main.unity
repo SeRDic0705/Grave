@@ -17494,8 +17494,8 @@ MonoBehaviour:
   zombiePrefab: {fileID: 5129041924146477374, guid: 632f8eca6808ba74fa50674e6faf9d76,
     type: 3}
   spawnRadius: 10
-  maxZombies: 10
-  spawnInterval: 2
+  maxZombies: 5
+  spawnInterval: 3
 --- !u!4 &1611419796
 Transform:
   m_ObjectHideFlags: 0

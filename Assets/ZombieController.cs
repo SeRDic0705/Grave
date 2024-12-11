@@ -23,8 +23,11 @@ public class ZombieController : MonoBehaviour
     public float sight_range, attack_range;
     public bool player_in_sight_range, player_in_attack_range;
 
-    int maxHP = 100;
+    int maxHP = 40;
+    float levelUpTimer = 0f;
     int currentHP;
+    int Damage = 5;
+    float DamageCounter = 0;
     private bool isDead = false;
 
     private void Awake()
@@ -33,6 +36,13 @@ public class ZombieController : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         currentHP = maxHP;
+    }
+    public void SetSpeed(float speed)
+    {
+        if (agent != null)
+        {
+            agent.speed = speed;
+        }
     }
 
     public void SetZombieGenerator(ZombieGenerator generator)
@@ -43,6 +53,7 @@ public class ZombieController : MonoBehaviour
     private void Start()
     {
         animator.SetBool("isRunning", true);
+        SetSpeed(2.5f);
     }
 
     private void SearchWalkPoint()
@@ -87,12 +98,20 @@ public class ZombieController : MonoBehaviour
         animator.SetBool("isRunning", false);
         animator.SetBool("isAttacking", true);
 
-        HealthManager h = player.GetComponent<HealthManager>();
         if (!already_attacked)
         {
             already_attacked = true;
-            Debug.Log(GameManager.Instance.Player.hp);
-            //h.TakeDamage(GameManager.Instance.Player.hp);
+
+
+            GameManager.Instance.Player.hp -= Damage;
+            
+            if(GameManager.Instance.Player.hp <= 0)
+            {
+                Debug.Log("game over");
+            }
+
+            
+
             Invoke(nameof(ResetAttack), time_between_attacks);
         }
     }
@@ -104,6 +123,9 @@ public class ZombieController : MonoBehaviour
 
         currentHP -= damage;
         Debug.Log($"Zombie HP: {currentHP}");
+
+        animator.ResetTrigger("isRunning");
+        animator.ResetTrigger("isAttacking");
 
         animator.SetTrigger("Attacked");
 
@@ -118,6 +140,10 @@ public class ZombieController : MonoBehaviour
         if (isDead) return;
         isDead = true;
         agent.enabled = false;
+
+        animator.ResetTrigger("Attacked");
+        animator.ResetTrigger("isRunning");
+        animator.ResetTrigger("isAttacking");
 
         if (Random.value > 0.5f)
         {
@@ -179,6 +205,18 @@ public class ZombieController : MonoBehaviour
         else if (player_in_sight_range && player_in_attack_range)
         {
             AttackPlayer();
+        }
+
+        levelUpTimer += Time.deltaTime;
+        if(levelUpTimer > 30.0f)
+        {
+            maxHP+=10;
+        }
+
+        DamageCounter = Time.deltaTime;
+        if(DamageCounter > 60.0f)
+        {
+            Damage += 10;
         }
     }
 }
