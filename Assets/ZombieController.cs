@@ -34,7 +34,7 @@ public class ZombieController : MonoBehaviour
     int maxHP = 20;
     float levelUpTimer = 0f;
     int currentHP;
-    int Damage = 1;
+    int Damage = 5;
     float DamageCounter = 0;
     private bool isDead = false;
 
@@ -178,7 +178,7 @@ public class ZombieController : MonoBehaviour
         {
             already_attacked = true;
 
-            GameManager.Instance.Player.hp -= Damage;
+            GameManager.Instance.Player.Damage(Damage);
 
             if (GameManager.Instance.Player.hp <= 0)
             {
@@ -224,6 +224,8 @@ public class ZombieController : MonoBehaviour
 
         StopSound();
         PlayDeathSound();
+
+        GameManager.Instance.Player.GainEXP(10);
 
         if (Random.value > 0.5f)
         {

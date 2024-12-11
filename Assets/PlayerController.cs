@@ -1,9 +1,9 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-
 
     public Animator animator;
     public Camera camera;
@@ -14,10 +14,12 @@ public class PlayerController : MonoBehaviour
     public AudioClip[] roarClips; // 공격 사운드 클립 배열 (Attack1, Attack2, Attack3 순서)
     public AudioClip footstepClip; // 발걸음 소리 클립
     public AudioClip skill1Clip; // skill1 효과음 클립
+    public AudioClip skill3Clip; // skill1 효과음 클립
 
     public Collider attackCollider;
 
     public Collider skill1Collider;
+    public Collider skill2Collider;
 
     public ParticleSystem[] attackParticles;
     public ParticleSystem skill1Particle; // skill1 파티클 시스템
@@ -31,6 +33,8 @@ public class PlayerController : MonoBehaviour
     private float comboTimer = 0f; // 콤보 입력 타이머
     public float comboTimeout = 1f; // 콤보 입력 유효 시간
     private bool isMoving = false; // 이동 중인지 여부
+
+    private bool[] cool = { true, true, true };
 
     private GameManager gameManager;
     public static PlayerController Instance { get; private set; }
@@ -198,6 +202,7 @@ public class PlayerController : MonoBehaviour
         animator.ResetTrigger("Idle");
 
         skill1Collider.enabled = false;
+        skill2Collider.enabled = false;
 
     }
 
@@ -268,10 +273,20 @@ public class PlayerController : MonoBehaviour
     {
         if (isAttacking) return;
 
-        isAttacking = true;
-        skill1Collider.enabled = true;
+        if (cool[0])
+        {
+            isAttacking = true;
+            //skill1Collider.enabled = true;
 
-        animator.SetTrigger("Skill1"); // skill1 애니메이션 실행
+            StartCoroutine(SkillCoolTime(0, GameManager.Instance.Player.skill1Cooldown));
+            animator.SetTrigger("Skill1"); // skill1 애니메이션 실행
+        }
+
+    }
+
+    public void ActivateSkill1Collider()
+    {
+        skill1Collider.enabled = true;
     }
 
     // skill1 효과음 재생
@@ -308,12 +323,21 @@ public class PlayerController : MonoBehaviour
         if (context.phase == InputActionPhase.Performed)
         {
             ActivateSkill2();
+
         }
     }
 
     private void ActivateSkill2()
     {
-        animator.SetTrigger("Skill2"); // skill1 애니메이션 실행
+        if (isAttacking) return;
+        if (cool[1])
+        {
+            isAttacking = true;
+            skill2Collider.enabled = true;
+
+            StartCoroutine(SkillCoolTime(1, GameManager.Instance.Player.skill2Cooldown));
+            animator.SetTrigger("Skill2"); // skill1 애니메이션 실행
+        }
     }
 
     public void OnSkill3Input(InputAction.CallbackContext context)
@@ -326,7 +350,40 @@ public class PlayerController : MonoBehaviour
 
     private void ActivateSkill3()
     {
-        animator.SetTrigger("Skill3"); // skill1 애니메이션 실행
+        if (isAttacking) return;
+        if (cool[2])
+        {
+            isAttacking = true;
+            skill1Collider.enabled = true;
+
+            StartCoroutine(SkillCoolTime(2, GameManager.Instance.Player.skill3Cooldown));
+            animator.SetTrigger("Skill3"); // skill1 애니메이션 실행
+        }
+
+    }
+
+    public void PlaySkill3Sound()
+    {
+        if (skill3Clip != null)
+        {
+            audioSource.PlayOneShot(skill3Clip);
+        }
+        else
+        {
+            Debug.LogWarning("Skill3 sound clip is not assigned.");
+        }
+    }
+
+    IEnumerator SkillCoolTime(int index, float coolTime)
+    {
+        cool[index] = false;
+        while (coolTime > 0)
+        {
+            coolTime -= Time.deltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+        cool[index] = true;
+        Debug.Log("Cool end");
     }
 
     public void OnMoveInput(InputAction.CallbackContext context)
@@ -351,6 +408,12 @@ public class PlayerController : MonoBehaviour
             audioSource.loop = true;
             audioSource.Play();
         }
+    }
+
+    public void Die()
+    {
+        animator.SetTrigger("Die");
+        
     }
 
     private Vector3 GetWorldPos()

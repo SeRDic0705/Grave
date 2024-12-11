@@ -14,9 +14,9 @@ public class Player
     public int point;
     public int EXP;
     public int currentEXP;
-    public float skill1Cooldown = 5f;
-    public float skill2Cooldown = 7f;
-    public float skill3Cooldown = 10f;
+    public float skill1Cooldown = 10f;
+    public float skill2Cooldown = 5f;
+    public float skill3Cooldown = 7f;
 
     public int[] EXPList = new int[]
     {
@@ -67,7 +67,10 @@ public class Player
     {
         currentHp -= amount;
         if (currentHp < 0)
+        {
             currentHp = 0;
+            TriggerGameOver();
+        }
         Debug.Log($"Player took {amount} damage. Current HP: {currentHp}");
     }
 
@@ -93,14 +96,14 @@ public class Player
         switch (statType.ToLower())
         {
             case "atk":
-                atk += 1;
+                atk += 5;
                 break;
             case "def":
-                def += 1;
+                def += 5;
                 break;
             case "hp":
-                hp += 10;
-                currentHp += 10;
+                hp += 50;
+                currentHp += 50;
                 break;
             default:
                 Debug.LogError("Invalid stat type.");
@@ -115,6 +118,16 @@ public class Player
     public void TriggerGameOver()
     {
         SceneManager.LoadScene("GameOver");
+
+        hp = 100;
+        currentHp = 100;
+        speed = 3.0f;
+        atk = 20;
+        def = 5;
+        level = 1;
+        point = 0;
+        currentEXP = 0;
+        EXP = EXPList[0];
     }
 
 }
