@@ -11,7 +11,14 @@ public class ZombieController : MonoBehaviour
     private Animator animator;
     private ZombieGenerator zombieGenerator;
 
-    // Patroling
+    // Sounds
+    private AudioSource audioSource;
+    public AudioClip[] voiceGrunts;
+    public AudioClip slurpBlood;
+    public AudioClip attackGrunt1; 
+    public AudioClip attackGrunt2;
+
+
     public Vector3 walk_point;
     bool walk_point_set;
     public float walk_point_range;
@@ -23,10 +30,11 @@ public class ZombieController : MonoBehaviour
     public float sight_range, attack_range;
     public bool player_in_sight_range, player_in_attack_range;
 
-    int maxHP = 40;
+    // Setting
+    int maxHP = 20;
     float levelUpTimer = 0f;
     int currentHP;
-    int Damage = 5;
+    int Damage = 1;
     float DamageCounter = 0;
     private bool isDead = false;
 
@@ -35,8 +43,11 @@ public class ZombieController : MonoBehaviour
         player = GameObject.Find("Player Character").transform;
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
         currentHP = maxHP;
+        time_between_attacks = 3.0f;
     }
+
     public void SetSpeed(float speed)
     {
         if (agent != null)
@@ -66,6 +77,70 @@ public class ZombieController : MonoBehaviour
         if (Physics.Raycast(walk_point, -transform.up, 2f, what_is_ground)) walk_point_set = true;
     }
 
+    private void PlayRandomGruntLoop()
+    {
+        if (audioSource != null && voiceGrunts.Length >= 3)
+        {
+            if (!audioSource.isPlaying)
+            {
+                int randomIndex = Random.Range(0, 3); 
+                audioSource.clip = voiceGrunts[randomIndex];
+                audioSource.loop = true; 
+                audioSource.Play();
+            }
+        }
+    }
+
+    private void StopSound()
+    {
+        if (audioSource != null && audioSource.isPlaying)
+        {
+            audioSource.Stop();
+            audioSource.loop = false;
+        }
+    }
+
+    private void PlayAttackSound()
+    {
+        if (audioSource != null && voiceGrunts.Length >= 5)
+        {
+            int randomIndex = Random.Range(3, 5); 
+            audioSource.clip = voiceGrunts[randomIndex];
+            audioSource.loop = false; 
+            audioSource.Play();
+        }
+    }
+
+    private void PlayDeathSound()
+    {
+        if (audioSource != null && slurpBlood != null)
+        {
+            audioSource.clip = slurpBlood;
+            audioSource.loop = false; 
+            audioSource.Play();
+        }
+    }
+
+    public void PlayRightHandAttackSound()
+    {
+        if (audioSource != null && attackGrunt1 != null)
+        {
+            audioSource.clip = attackGrunt1;
+            audioSource.loop = false;
+            audioSource.Play();
+        }
+    }
+
+    public void PlayLeftHandAttackSound()
+    {
+        if (audioSource != null && attackGrunt2 != null)
+        {
+            audioSource.clip = attackGrunt2;
+            audioSource.loop = false;
+            audioSource.Play();
+        }
+    }
+
     private void Patroling()
     {
         if (!walk_point_set) SearchWalkPoint();
@@ -75,6 +150,7 @@ public class ZombieController : MonoBehaviour
         if (distance_to_walk_point.magnitude < 1f) walk_point_set = false;
 
         animator.SetBool("isRunning", false);
+        StopSound();
     }
 
     private void ChasePlayer()
@@ -83,11 +159,8 @@ public class ZombieController : MonoBehaviour
 
         animator.SetBool("isRunning", true);
         animator.SetBool("isAttacking", false);
-    }
 
-    private void ResetAttack()
-    {
-        already_attacked = false;
+        PlayRandomGruntLoop();
     }
 
     private void AttackPlayer()
@@ -98,27 +171,31 @@ public class ZombieController : MonoBehaviour
         animator.SetBool("isRunning", false);
         animator.SetBool("isAttacking", true);
 
+        StopSound(); 
+        PlayAttackSound();
+
         if (!already_attacked)
         {
             already_attacked = true;
 
-
             GameManager.Instance.Player.hp -= Damage;
-            
-            if(GameManager.Instance.Player.hp <= 0)
+
+            if (GameManager.Instance.Player.hp <= 0)
             {
                 Debug.Log("game over");
             }
-
-            
 
             Invoke(nameof(ResetAttack), time_between_attacks);
         }
     }
 
+    private void ResetAttack()
+    {
+        already_attacked = false;
+    }
+
     public void TakeDamage(int damage)
     {
-        // TODO: Level Design , Debuging log deletion
         if (isDead) return;
 
         currentHP -= damage;
@@ -144,6 +221,9 @@ public class ZombieController : MonoBehaviour
         animator.ResetTrigger("Attacked");
         animator.ResetTrigger("isRunning");
         animator.ResetTrigger("isAttacking");
+
+        StopSound();
+        PlayDeathSound();
 
         if (Random.value > 0.5f)
         {
@@ -172,7 +252,6 @@ public class ZombieController : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Attack"))
         {
-            Debug.Log("Collision occurred");
             TakeDamage(GameManager.Instance.Player.atk);
         }
     }
@@ -208,15 +287,15 @@ public class ZombieController : MonoBehaviour
         }
 
         levelUpTimer += Time.deltaTime;
-        if(levelUpTimer > 30.0f)
+        if (levelUpTimer > 30.0f)
         {
-            maxHP+=10;
+            maxHP += 20;
         }
 
         DamageCounter = Time.deltaTime;
-        if(DamageCounter > 60.0f)
+        if (DamageCounter > 60.0f)
         {
-            Damage += 10;
+            Damage += 1;
         }
     }
 }
