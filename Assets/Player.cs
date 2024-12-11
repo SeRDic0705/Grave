@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player
 {
     private static Player player = null;
 
@@ -15,19 +15,9 @@ public class Player : MonoBehaviour
     public float skill2Cooldown = 7f;
     public float skill3Cooldown = 10f;
 
-    private void Awake()
+    private Player()
     {
-        if (player == null)
-        {
-            player = this;
-            DontDestroyOnLoad(gameObject); // ¾À ÀüÈ¯ ½Ã À¯Áö
-        }
-        else if (player != this)
-        {
-            Destroy(gameObject); // Áßº¹µÈ ÀÎ½ºÅÏ½º¸¦ ÆÄ±«
-        }
-
-        // ±âº» ¼Ó¼º ÃÊ±âÈ­
+        // ï¿½âº» ï¿½Ó¼ï¿½ ï¿½Ê±ï¿½È­
         hp = 100;
         currentHp = 100;
         speed = 3.0f;
@@ -43,7 +33,7 @@ public class Player : MonoBehaviour
     {
         if (player == null)
         {
-            Debug.LogError("Player instance is not initialized! Ensure the Player script is attached to a GameObject.");
+            player = new Player();
         }
         return player;
     }
